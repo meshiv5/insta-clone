@@ -1,0 +1,100 @@
+.mainDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 120px;
+}
+
+.iphoneDiv {
+  background-image: url("../../images/LoginPage/iphone.png");
+  background-repeat: no-repeat;
+  background-size: 468.32px 634.15px;
+  width: 468.32px;
+  height: 581.15px;
+}
+
+.iphoneDiv > img:nth-child(1) {
+  width: 250px;
+  height: 538.84px;
+  position: relative;
+  left: 158px;
+  top: 27px;
+  opacity: 0;
+  transition: opacity 2s ease-out, opacity 3.5s ease-in;
+}
+.formDiv {
+  border: 1px solid rgb(var(--ig-elevated-separator));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 10px;
+}
+
+.loginForm {
+  display: grid;
+  gap: 5px;
+  padding: 30px;
+}
+.loginForm > button {
+  padding: 9px 20px;
+  background-color: #4cb4f8;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 7px;
+  margin-top: 5px;
+  width: 250px;
+  cursor: pointer;
+}
+.loginForm > input {
+  border: 1px solid rgb(var(--ig-elevated-separator));
+  text-overflow: ellipsis;
+  padding: 9px 0 7px 8px;
+}
+.loginForm > input:focus {
+  outline: none;
+}
+.orDiv {
+  display: flex;
+  align-items: center;
+}
+.orDiv > div {
+  border-top: 1px solid rgb(var(--ig-separator));
+  height: 1px;
+  width: 100px;
+}
+.forgetPassword {
+  text-align: center;
+}
+.forgetPassword > a {
+  text-decoration: none;
+  color: rgb(var(--ig-link));
+  font-size: var(--system-12-font-size);
+  line-height: var(--system-12-line-height);
+  margin-top: 12px !important;
+  text-align: center !important;
+}
+.signupLinkTab {
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid rgb(var(--ig-elevated-separator));
+  padding: 20px 30px;
+  margin-top: 10px;
+}
+.signupLinkTab > p > a {
+  text-decoration: none;
+  font-weight: 500;
+  color: rgb(var(--ig-primary-button));
+}
+.getAppTab {
+  text-align: center;
+  margin-top: 20px;
+}
+.getAppLinks > img {
+  margin-top: 15px;
+  cursor: pointer;
+  height: 37px;
+  width: 120px;
+  margin-right: 5px;
+  margin-left: 5px;
+}

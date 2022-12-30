@@ -1,0 +1,26 @@
+.FooterDiv {
+  position: absolute;
+  bottom: -20px;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.links > a {
+  text-decoration: none;
+  color: rgb(var(--ig-secondary-text));
+  font-weight: var(--font-weight-system-regular);
+  font-size: var(--system-12-font-size);
+  line-height: var(--system-12-line-height);
+  margin: 0px 5px;
+}
+.copyright > p {
+  text-decoration: none;
+  color: rgb(var(--ig-secondary-text));
+  font-weight: var(--font-weight-system-regular);
+  font-size: var(--system-12-font-size);
+  line-height: var(--system-12-line-height);
+  margin: 10px 0px 40px 0px;
+  text-align: center;
+}
