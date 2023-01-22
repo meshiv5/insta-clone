@@ -3,17 +3,14 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer/Footer";
-import Iphone from "../components/Login/Iphone";
-import LoginForm from "../components/Login/LoginForm";
+import ResetForm from "../components/ForgotPassword/ResetForm";
 import useMedia from "../hooks/useMedia";
 import { setAuth } from "../redux/actions/authActions";
-import styles from "../styles/Login/Login.module.css";
-
-export default function Login() {
+import styles from "../styles/Signup/Signup.module.css";
+export default function Reset() {
+  const isSmallHeight = useMedia("(max-height: 900px)");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isSmallWidth = useMedia("(max-width: 800px)");
-  const isSmallHeight = useMedia("(max-height: 750px)");
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_SERVER + "user", { withCredentials: true })
@@ -27,8 +24,7 @@ export default function Login() {
   }, []);
   return (
     <div className={styles.mainDiv}>
-      {isSmallWidth || <Iphone />}
-      <LoginForm />
+      <ResetForm />
       {isSmallHeight || <Footer />}
     </div>
   );

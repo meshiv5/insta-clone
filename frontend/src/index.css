@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --fds-black: #000000;
   --fds-black-alpha-05: rgba(0, 0, 0, 0.05);

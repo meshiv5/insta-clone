@@ -1,18 +1,74 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { resetState, signup } from "../../redux/actions/authActions";
 import styles from "../../styles/Signup/Signup.module.css";
 
 export default function SignupForm() {
+  const [formData, setFormData] = useState({ email: "", name: "", username: "", password: "" });
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const { signupLoading, signupError, signupSuccess, signupMessage } = useSelector((store) => store.auth);
+  useEffect(() => {
+    if (signupSuccess) {
+      toast({
+        title: "Signed Up Successfully !",
+        description: "redirecting to login page",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } else if (signupError) {
+      toast({
+        title: "Something Went Wrong !",
+        description: signupMessage,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+    return () => dispatch(resetState());
+  }, [signupSuccess, signupError]);
+  function handleFormChange({ target }) {
+    setFormData({ ...formData, [target.name]: target.value });
+  }
+  function handleFormSubmit(e) {
+    e.preventDefault();
+    dispatch(signup(formData));
+
+    setFormData({ email: "", name: "", username: "", password: "" });
+  }
   return (
     <div>
       <div className={styles.formDiv}>
         <img src={require("../../images/LoginPage/insta_log.png")} alt="logo" />
         <p className={styles.desc}>Sign up to see photos and videos from your friends.</p>
-        <form className={styles.signupForm}>
-          <input type="text" value="" placeholder="Mobile Number or Email" />
-          <input type="text" value="" placeholder="Full Name" />
-          <input type="text" value="" placeholder="Username" />
-          <input type="text" value="" placeholder="Password" />
+        <form autocomplete="off" action="post" className={styles.signupForm} onSubmit={handleFormSubmit}>
+          <input required type="email" onChange={handleFormChange} name="email" value={formData.email} placeholder="Mobile Number or Email" />
+          <input pattern="[a-Z]{4,}" required type="text" onChange={handleFormChange} name="name" value={formData.name} placeholder="Full Name" />
+          <input
+            pattern="[a-Z0-9].{4,}"
+            required
+            type="text"
+            onChange={handleFormChange}
+            name="username"
+            value={formData.username}
+            placeholder="Username"
+          />
+          <input
+            pattern="(?=.*\d)(?=.*[a-z]).{6,}"
+            required
+            type="password"
+            onChange={handleFormChange}
+            name="password"
+            value={formData.password}
+            placeholder="Password"
+          />
           <p>
             People who use our service may have uploaded your contact information to Instagram. <span className={styles.spanTag}>Learn More</span>
           </p>
@@ -20,7 +76,7 @@ export default function SignupForm() {
             By signing up, you agree to our <span className={styles.spanTag}>Terms , Privacy Policy</span> and{" "}
             <span className={styles.spanTag}>Cookies Policy .</span>
           </p>
-          <button>Sign up</button>
+          <button disabled={signupLoading}>Sign up</button>
         </form>
       </div>
       <div className={styles.signupLinkTab}>

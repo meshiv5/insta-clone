@@ -1,15 +1,54 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { login, resetState, setAuth } from "../../redux/actions/authActions";
 import styles from "../../styles/Login/Login.module.css";
 export default function LoginForm() {
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { loginLoading, loginError, loginSuccess, loginMessage } = useSelector((store) => store.auth);
+  useEffect(() => {
+    if (loginSuccess) {
+      toast({
+        title: "Logged In Successfully !",
+        description: "Redirecting to Home page",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      dispatch(setAuth(true));
+      navigate("/");
+    } else if (loginError) {
+      toast({
+        title: "Something Went Wrong !",
+        description: loginMessage,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+    return () => dispatch(resetState());
+  }, [loginError, loginSuccess]);
+  function handleFormChange({ target }) {
+    setFormData({ ...formData, [target.name]: target.value });
+  }
+  function handleLogin() {
+    dispatch(login(formData));
+    setFormData({ username: "", password: "" });
+  }
   return (
     <div>
       <div className={styles.formDiv}>
         <img src={require("../../images/LoginPage/insta_log.png")} alt="logo" />
-        <form className={styles.loginForm}>
-          <input type="text" value="" placeholder="Phone number , username or email" />
-          <input type="text" value="" placeholder="Password" />
-          <button>Log in</button>
+        <form autoComplete="false" className={styles.loginForm}>
+          <input required onChange={handleFormChange} name="username" type="text" value={formData.username} placeholder="Username" />
+          <input required onChange={handleFormChange} name="password" type="password" value={formData.password} placeholder="Password" />
+          <button onClick={handleLogin} disabled={loginLoading}>
+            Log in
+          </button>
         </form>
         <div className={styles.orDiv}>
           <div></div>
