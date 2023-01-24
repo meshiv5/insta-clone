@@ -17,6 +17,7 @@
   margin-bottom: 15px;
   margin-left: -40%;
   margin-right: -40%;
+  position: relative;
 }
 .searchBar > input {
   color: black;
@@ -61,7 +62,7 @@
   height: 25px;
   border-radius: 50%;
 }
-.profileBtn > img{
+.profileBtn > img {
   width: 45px;
   height: 25px;
 }

@@ -8,14 +8,22 @@ import { ReactComponent as ProfileIcon } from "../../svg/profileIcon.svg";
 import { ReactComponent as SavedIcon } from "../../svg/savedIcon.svg";
 import { ReactComponent as SetttingsIcon } from "../../svg/settingsIcon.svg";
 import { ReactComponent as DayIcon } from "../../svg/dayIcon.svg";
+import { useContext } from "react";
+import { userContext } from "../../context/UserContextProider";
 export default function ProfileMenu({ onClose, onOpen, isOpen }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { profileData } = useContext(userContext);
   const toast = useToast();
   const { isAuth } = useSelector((store) => store.auth);
   useEffect(() => {
     if (!isAuth) {
-      navigate("/login");
+      axios
+        .get(process.env.REACT_APP_SERVER + "user", { withCredentials: true })
+        .then((res) => {})
+        .catch((e) => {
+          navigate("/login");
+        });
     }
   }, [isAuth]);
   function handleLogout(e) {
@@ -47,18 +55,18 @@ export default function ProfileMenu({ onClose, onOpen, isOpen }) {
       <ModalContent w={220} ml={800} mt={70}>
         <ModalBody pb={5} pl={5} pr={5} fontSize={14}>
           <Box mt={3}>
-            <Link className="flex" to={"/meshiv5"}>
+            <Link className="flex" to={`/${profileData.username}`} onClick={onClose}>
               <ProfileIcon /> <p className="-mt-0.5">Profile</p>
             </Link>
           </Box>
           <Box mt={3}>
-            <Link className="flex">
+            <Link className="flex" onClick={onClose}>
               <SavedIcon />
               <p className="-mt-0.5">Saved</p>
             </Link>
           </Box>
           <Box mt={3}>
-            <Link className="flex">
+            <Link className="flex" onClick={onClose}>
               <DayIcon />
               <p className="-mt-0.5">Switch Appearence</p>
             </Link>
@@ -67,7 +75,9 @@ export default function ProfileMenu({ onClose, onOpen, isOpen }) {
             <Box className="flex">
               <SetttingsIcon />
               <p className="-mt-0.5">
-                <Link to={"/edit/user"}>Settings</Link>
+                <Link to={"/edit/user"} onClick={onClose}>
+                  Settings
+                </Link>
               </p>
             </Box>
           </Box>

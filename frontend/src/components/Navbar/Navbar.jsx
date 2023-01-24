@@ -39,7 +39,7 @@ export default function Navbar() {
     //*eslint-enable */
   }, [location.pathname]);
   return (
-    <div className={"sticky top-0 z-20 bg-white" + " " + styles.mainDiv}>
+    <div className={"sticky top-0 z-10 bg-white" + " " + styles.mainDiv}>
       <ProfileMenu isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <img style={{ cursor: "pointer" }} onClick={() => navigate("/")} src={require("../../images/LoginPage/insta_log.png")} alt="navLogo" />
       {isMax650 || <SearchBar />}

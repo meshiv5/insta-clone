@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function NotFound() {
   return (
@@ -79,9 +80,9 @@ export default function NotFound() {
         </div>
       </center>
       <center className="mt-6">
-        <a href="{{url()->previous()}}" className="text-gray-500 font-mono text-xl bg-gray-200 p-3 rounded-md hover:shadow-md">
+        <Link to="/" className="text-gray-500 font-mono text-xl bg-gray-200 p-3 rounded-md hover:shadow-md">
           Go back
-        </a>
+        </Link>
       </center>
     </div>
   );

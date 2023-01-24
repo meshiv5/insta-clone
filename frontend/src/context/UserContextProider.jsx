@@ -6,6 +6,7 @@ export default function UserContextProvider({ children }) {
   const [profileData, setProfileData] = useState({});
   const [postData, setPostData] = useState([]);
   const [updateIt, setUpdateIt] = useState(1);
+  const [socket, setSocket] = useState({});
   useEffect(() => {
     getUserDetails().then((res) => {
       let data = res.data.data;
@@ -17,5 +18,9 @@ export default function UserContextProvider({ children }) {
       setPostData([...data]);
     });
   }, [updateIt]);
-  return <userContext.Provider value={{ profileData, setProfileData, setUpdateIt, postData, setPostData }}>{children}</userContext.Provider>;
+  return (
+    <userContext.Provider value={{ profileData, setProfileData, setUpdateIt, postData, setPostData, setSocket, socket }}>
+      {children}
+    </userContext.Provider>
+  );
 }

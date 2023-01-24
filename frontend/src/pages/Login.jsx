@@ -14,6 +14,7 @@ export default function Login() {
   const navigate = useNavigate();
   const isSmallWidth = useMedia("(max-width: 800px)");
   const isSmallHeight = useMedia("(max-height: 750px)");
+
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_SERVER + "user", { withCredentials: true })

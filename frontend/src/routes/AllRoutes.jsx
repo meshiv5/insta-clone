@@ -11,6 +11,7 @@ import Notifications from "../pages/Notifications";
 import Profile from "../pages/Profile";
 import EditProfile from "../pages/EditProfile";
 import SinglePost from "../pages/SinglePost";
+import NotFound from "../pages/NotFound";
 
 export default function AllRoutes() {
   return (
@@ -74,6 +75,7 @@ export default function AllRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/reset-password" element={<Reset />} />
+      <Route path="/404" element={<NotFound />} />
     </Routes>
   );
 }

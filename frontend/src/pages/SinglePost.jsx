@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import { userContext } from "../context/UserContextProider";
 import NotFound from "./NotFound";
 import EmojiPicker from "emoji-picker-react";
+import createCommentWithData from "../utils/createCommentWithData";
 import {
   EllipsisHorizontalIcon,
   HeartIcon,
@@ -14,27 +15,100 @@ import {
 } from "@heroicons/react/24/outline";
 import { HeartIcon as DarkHeartIcon, BookmarkIcon as DarkBookmarkIcon } from "@heroicons/react/24/solid";
 import Comments from "../components/Posts/Comments";
-
+import { useEffect } from "react";
+import getPostDataByPostId from "../utils/getPostByPostId";
+import { useToast } from "@chakra-ui/react";
+import unlikePost from "../utils/UnlikePost";
+import likePost from "../utils/likePost";
+import getUserDetailsUsingId from "../utils/getUserDetailsUsingId";
+import LikeList from "../components/Posts/LikeList";
+import DeleteMenu from "../components/Posts/DeleteMenu";
+import socket from "../socket";
+import uuid from "react-uuid";
+import fetchAllComments from "../utils/fetchAllComments";
 export default function SinglePost() {
   const [like, setLike] = useState(false);
+  const [firstLikedBy, setFirstLikedBy] = useState("");
   const [bookmark, setBookmark] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
+  const toast = useToast();
+  const [post, setPost] = useState({});
   const { id } = useParams();
-  const { postData, profileData } = useContext(userContext);
-  let post = {};
-  postData.forEach((p) => {
-    if (p._id === id) post = { ...p };
-  });
-  if (Object.keys(post).length === 0) {
-    return <NotFound />;
-  }
+  const { profileData } = useContext(userContext);
+  const [showLikeList, setShowLikeList] = useState(false);
+  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
+  const [commentValue, setCommentValue] = useState("");
+  const [commentArray, setCommentArray] = useState([]);
+  const [render, setRender] = useState(1);
+  useEffect(() => {
+    fetchAllComments(id).then((res) => {
+      let commentArrayRes = res.data.comments.map((cmt) => JSON.parse(cmt));
+      setCommentArray([...commentArrayRes]);
+    });
+  }, [render]);
+  useEffect(() => {
+    getPostDataByPostId(id)
+      .then((res) => {
+        setPost({ ...res.data.posts });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [like]);
+  useEffect(() => {
+    if (post.like?.length > 0) {
+      getUserDetailsUsingId(post.like[0]).then((res) => {
+        setFirstLikedBy(res.data.data.username);
+      });
+    }
+    if (post.like?.includes(profileData._id)) setLike(true);
+  }, [post]);
   // Toggle Like Function
   function toggleLike() {
     if (like) {
-      setLike(false);
-    } else setLike(true);
+      unlikePost(post._id)
+        .then((res) => {
+          toast({
+            title: "Unliked Success",
+            status: "warning",
+            description: "successfully unliked !",
+            isClosable: true,
+            duration: 2000,
+          });
+          setLike(false);
+        })
+        .catch((err) => {
+          toast({
+            title: "Failed To UnLike",
+            status: "error",
+            description: "some error occured",
+            isClosable: true,
+            duration: 2000,
+          });
+        });
+    } else {
+      likePost(post._id)
+        .then((res) => {
+          toast({
+            title: "Like Success",
+            status: "success",
+            description: "successfully liked !",
+            isClosable: true,
+            duration: 2000,
+          });
+          setLike(true);
+        })
+        .catch((err) => {
+          toast({
+            title: "Failed To Like",
+            status: "error",
+            description: "some error occured",
+            isClosable: true,
+            duration: 2000,
+          });
+        });
+    }
   }
   // Toggle bookmark Function
 
@@ -45,8 +119,10 @@ export default function SinglePost() {
   }
 
   // On emoji button Click
-  const onEmojiClick = (event, emojiObject) => {
+  const onEmojiClick = (emojiObject, event) => {
     setChosenEmoji(emojiObject);
+    setCommentValue(commentValue + emojiObject.emoji);
+    setShowEmojiPicker(false);
   };
 
   // Open Emoji Box
@@ -55,29 +131,75 @@ export default function SinglePost() {
     if (showEmojiPicker) setShowEmojiPicker(false);
     else setShowEmojiPicker(true);
   }
+
+  if (Object.keys(post).length === 0) {
+    return <NotFound />;
+  }
+
+  // Handle Comment Post
+  socket.on(`get-comment-${post._id}`, (data) => {
+    setCommentArray([...commentArray, data]);
+  });
+  function handleCommentPost() {
+    let comment = { id: uuid(), postId: post._id, text: commentValue, likes: 0, profileData: profileData };
+    setCommentArray([...commentArray, comment]);
+
+    createCommentWithData(comment)
+      .then((res) => {
+        socket.emit("create-comment", comment, post._id);
+        toast({
+          title: "Commented Successfully !",
+          status: "success",
+          description: "successfully commented on post",
+          isClosable: true,
+          duration: 2000,
+        });
+      })
+      .catch((err) => {
+        toast({
+          title: "Comment Failed !",
+          status: "warning",
+          description: "failed to comment on post",
+          isClosable: true,
+          duration: 2000,
+        });
+      });
+  }
+  // Handle Delete
+
+  socket.on(`delete-comment`, (commentId) => {
+    let newArr = commentArray.filter((each) => {
+      if (each.id != commentId) return each;
+    });
+    setCommentArray([...newArr]);
+  });
   return (
     <div>
       <Navbar></Navbar>
       <div className="flex max-md:flex-col max-md:w-[80%] border border-[#DBDBDB]-500 w-[50%] h-[700px] m-auto mt-10">
         <div className="max-md:w-[100%] w-[60%]">
-          <img
-            className="w-[100%] h-[100%]"
-            src={"https://s3.amazonaws.com/www-inside-design/uploads/2020/10/aspect-ratios-blogpost-1x1-1.png"}
-            alt=""
-          />
+          <img className="w-[100%] h-[100%]" src={post.image} alt="" />
         </div>
         <div className="max-md:w-[100%] w-[40%] p-4">
           <div className="flex align-middle pb-4 relative">
-            <img className="rounded-full w-[30px] h-[30px] mr-[20px]" src={profileData.profileImage} alt="" />
-            <p className="font-semibold">meshiv5</p>
-            <EllipsisHorizontalIcon width={25} className="absolute right-[0px] cursor-pointer" />
+            <Link to={`/${post.author.username}`}>
+              <img className="rounded-full w-[30px] h-[30px] mr-[20px]" src={post.author.profileImage} alt="" />
+            </Link>
+            <Link to={`/${post.author.username}`}>
+              <p className="font-semibold">{post.author.username}</p>
+            </Link>
+            {showDeleteMenu && <DeleteMenu setShowDeleteMenu={setShowDeleteMenu} postID={post._id} author={post.author} />}
+            <EllipsisHorizontalIcon
+              onClick={() => {
+                setShowDeleteMenu(true);
+              }}
+              width={25}
+              className="absolute right-[0px] cursor-pointer"
+            />
           </div>
           <hr className="border-t-1 border-[#DBDBDB]-400 w-[109%] -ml-[16px]" />
 
-          <Comments
-            profileData={profileData}
-            commentsArr={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]}
-          />
+          <Comments caption={post.caption} postData={post} profileData={profileData} commentsArr={commentArray} setRender={setRender} />
           <hr className="border-t-1 border-[#DBDBDB]-400 w-[109%] -ml-[16px]" />
           <div className="p-3">
             <div className="flex relative">
@@ -95,13 +217,33 @@ export default function SinglePost() {
               )}
             </div>
             <div>
-              <p className="cursor-pointer py-3">Liked by 25.shubham_ and others</p>
-              <p className="text-[10px] text-[#8E8E8E] cursor-pointer">DECEMBER 4, 2021</p>
+              {showLikeList && <LikeList listData={post.like} setShowLikeList={setShowLikeList} />}
+              {post.like.length === 0 && <p className="cursor-pointer py-3">No Likes</p>}
+              {firstLikedBy && post.like.length > 0 && (
+                <p
+                  className="cursor-pointer py-3"
+                  onClick={() => {
+                    setShowLikeList(true);
+                  }}
+                >
+                  Liked by <Link to={`/${firstLikedBy}`}>{firstLikedBy}</Link> and {post.like.length - 1} others
+                </p>
+              )}
             </div>
             <div className="flex relative mt-[12px]">
               <FaceSmileIcon onClick={openEmojiMenu} width={25} className="cursor-pointer" />
-              <input type="text" className="p-2 outline-none" placeholder="Add a comment...." />
-              <button className="absolute right-[0px] text-[#0095F6]">Post</button>
+              <input
+                onChange={({ target }) => {
+                  setCommentValue(target.value);
+                }}
+                value={commentValue}
+                type="text"
+                className="p-2 outline-none"
+                placeholder="Add a comment...."
+              />
+              <button onClick={handleCommentPost} className="absolute right-[0px] top-3 text-[#0095F6]">
+                Post
+              </button>
             </div>
             {showEmojiPicker && (
               <div className="relative">
