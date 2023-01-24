@@ -5,7 +5,7 @@
 
 
 ## Important Notification
-- Backend is Currently Not Deployed So Yo Have TO Run Backend Locally On PORT:8080 Check Backend Folder For More Details On How To Use
+- Backend is Currently Not Deployed So Yo Have To Run Backend Locally On PORT:8080  Scroll To Bottom To See Important ENV.
 
 
 ## Features
