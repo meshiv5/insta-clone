@@ -21,6 +21,8 @@
     "mongoose": "^6.8.2",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
+    "socket.io": "^4.5.4",
+    "socketio-auth": "^0.1.1",
     "universal-cookie-express": "^4.0.3"
   }
 }

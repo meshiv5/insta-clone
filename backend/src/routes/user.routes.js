@@ -156,4 +156,76 @@ userRouter.get("/", auth, async (req, res) => {
   let finalUser = await UserModel.findOne({ _id: req.user._id });
   return res.status(200).json({ status: true, data: finalUser });
 });
+
+userRouter.get("/many", auth, async (req, res) => {
+  let { search } = req.query;
+  try {
+    const regex = new RegExp(search, "i");
+    let finalUser = await UserModel.find(search ? { name: { $regex: regex } } : {});
+    if (!finalUser) throw new Error("Failed");
+    return res.status(200).json({ status: true, data: finalUser });
+  } catch (e) {
+    console.log(e.message);
+    res.status(400).send({ status: false, message: "Some Problem Occured" });
+  }
+});
+
+userRouter.get("/:username", auth, async (req, res) => {
+  try {
+    let finalUser = await UserModel.findOne({ username: req.params.username });
+    if (!finalUser) throw new Error("Failed");
+    return res.status(200).json({ status: true, data: finalUser });
+  } catch (e) {
+    res.status(400).send({ status: false, message: "User Doesn't Exists" });
+  }
+});
+userRouter.get("/getWithID/:userID", auth, async (req, res) => {
+  try {
+    let finalUser = await UserModel.findOne({ _id: req.params.userID });
+    if (!finalUser) throw new Error("Failed");
+    return res.status(200).json({ status: true, data: finalUser });
+  } catch (e) {
+    res.status(400).send({ status: false, message: "User Doesn't Exists" });
+  }
+});
+
+userRouter.post("/follow/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id === req.user._id) {
+      return res.status(400).send({ status: false, message: "You cant Follow Yourself" });
+    }
+    let userGettingFollower = await UserModel.findOne({ _id: id });
+    let userWhoFollowing = await UserModel.findOne({ _id: req.user._id });
+    userGettingFollower.followers.push(req.user._id);
+    userWhoFollowing.following.push(id);
+    await userGettingFollower.save();
+    await userWhoFollowing.save();
+    return res.status(200).json({ status: true, data: "Followed Successfully !" });
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send({ status: false, message: "Some Error Occured !" });
+  }
+});
+userRouter.post("/unfollow/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id === req.user._id) {
+      return res.status(400).send({ status: false, message: "You cant Unfollow Yourself" });
+    }
+    let userGettingFollower = await UserModel.findOne({ _id: id });
+    let userWhoFollowing = await UserModel.findOne({ _id: req.user._id });
+    let firstIndex = userGettingFollower.followers.indexOf(req.user._id);
+    let secondIndex = userWhoFollowing.following.indexOf(id);
+    userGettingFollower.followers.pop(firstIndex);
+    userWhoFollowing.following.pop(secondIndex);
+    await userGettingFollower.save();
+    await userWhoFollowing.save();
+    return res.status(200).json({ status: true, data: "Unfollowed Successfully !" });
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send({ status: false, message: "Some Error Occured !" });
+  }
+});
+
 module.exports = { userRouter };

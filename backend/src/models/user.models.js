@@ -38,11 +38,11 @@ const UserSchema = new mongoose.Schema(
       default: "Visionary .",
     },
     followers: {
-      type: [Number],
+      type: [String],
       default: [],
     },
     following: {
-      type: [Number],
+      type: [String],
       default: [],
     },
     posts: {
