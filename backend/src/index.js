@@ -24,16 +24,6 @@ app.use(
   })
 );
 
-// Session
-app.use(
-  session({
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 15,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production",
-    },
-  })
-);
 //
 if (app.get("env") === "production") {
   app.set("trust proxy", 1);
