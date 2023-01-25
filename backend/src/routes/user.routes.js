@@ -51,7 +51,7 @@ userRouter.post("/login", async (req, res) => {
               {
                 maxAge: 84000 * 60 * 60 * 2,
               },
-              { domain: ".onrender.com", path: "/", sameSite: "None", secure: true }
+              { httpOnly: true, domain: process.env.NODE_ENV === "development" ? ".localhost" : ".onrender.com" }
             )
             .status(200)
             .send({ status: true, message: "Logged In Successfully" });
