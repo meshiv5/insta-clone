@@ -43,17 +43,7 @@ userRouter.post("/login", async (req, res) => {
         let isMatched = await bcrypt.compare(password, user.password);
         if (isMatched && (email === user.email || username === user.username)) {
           let token = await UserModel.getJWT(user);
-          res.clearCookie("access_token");
-          res
-            .cookie("access_token", token, {
-              domain: "https://social-gram.onrender.com",
-              maxAge: 60 * 60 * 24 * 7,
-              sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-              secure: process.env.NODE_ENV === "production",
-              httpOnly: false,
-            })
-            .status(200)
-            .send({ status: true, message: "Logged In Successfully" });
+          res.status(200).send({ status: true, message: "Logged In Successfully", token });
         } else {
           res.status(401).send({ status: true, message: "Wrong Password ! Try Again" });
         }

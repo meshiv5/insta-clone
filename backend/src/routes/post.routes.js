@@ -167,7 +167,6 @@ Router.delete("/comment/:postId/:commentID", auth, async (req, res) => {
       let xd = JSON.parse(cmt);
       if (xd.id != commentID) return cmt;
     });
-    console.log(newComments);
     post.comments = [...newComments];
     await post.save();
     res.status(200).send({ status: true, message: "post deleted successfully !" });

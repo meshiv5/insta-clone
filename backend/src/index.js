@@ -23,9 +23,6 @@ app.use(
   })
 );
 
-if (app.get("env") === "production") {
-  app.set("trust proxy", 1);
-}
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send({ status: true, message: "Instagram Api Home" });
