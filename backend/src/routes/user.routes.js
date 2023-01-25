@@ -46,7 +46,7 @@ userRouter.post("/login", async (req, res) => {
           res.clearCookie("access_token");
           res
             .cookie("access_token", token, {
-              domain: "onrender.com",
+              domain: "https://social-gram.onrender.com",
               maxAge: 60 * 60 * 24 * 7,
               sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
               secure: process.env.NODE_ENV === "production",
