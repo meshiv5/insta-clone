@@ -12,7 +12,7 @@ const socketioAuth = require("socketio-auth");
 const authenticate = require("./middlewares/authenticate");
 const postAuthenticate = require("./middlewares/postAuthenticate");
 const corsOptions = {
-  origin: "https://social-gram.onrender.com",
+  origin: process.env.NODE_ENV === "development" ? "https://localhost:3000" : "https://social-gram.onrender.com",
   credentials: true,
   optionSuccessStatus: 200,
 };
