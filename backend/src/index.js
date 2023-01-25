@@ -12,7 +12,7 @@ const socketioAuth = require("socketio-auth");
 const authenticate = require("./middlewares/authenticate");
 const postAuthenticate = require("./middlewares/postAuthenticate");
 const corsOptions = {
-  origin: ["https://socialgram-in.vercel.app", "http://localhost:3000"],
+  origin: "https://social-gram.onrender.com",
   credentials: true,
   optionSuccessStatus: 200,
 };
