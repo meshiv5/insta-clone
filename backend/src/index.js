@@ -14,7 +14,6 @@ const postAuthenticate = require("./middlewares/postAuthenticate");
 
 const httpServer = createServer(app);
 app.use(express.urlencoded({ extended: false }));
-
 app.use(express.json());
 app.use(
   cors({

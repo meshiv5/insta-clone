@@ -46,8 +46,8 @@ userRouter.post("/login", async (req, res) => {
           res.clearCookie("access_token");
           res
             .cookie("access_token", token, {
-              domain: ".onrender.com",
-              maxAge: 1000 * 60 * 60 * 24 * 15,
+              domain: "onrender.com",
+              maxAge: 60 * 60 * 24 * 7,
               sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
               secure: process.env.NODE_ENV === "production",
               httpOnly: false,
