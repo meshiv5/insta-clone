@@ -23,6 +23,7 @@ export const login = (data) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
+    document.cookie = `access_token=${response.data.token};SameSite=None;Secure`;
     dispatch({ type: LOGIN_SUCCESS, payload: response.data.message });
   } catch (e) {
     console.log(e);
