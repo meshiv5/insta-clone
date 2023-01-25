@@ -47,8 +47,6 @@ userRouter.post("/login", async (req, res) => {
           res
             .cookie("access_token", token, {
               domain: process.env.NODE_ENV === "development" ? ".localhost" : ".onrender.com",
-              sameSite: "none",
-              maxAge: 84000 * 60 * 60 * 2,
             })
             .status(200)
             .send({ status: true, message: "Logged In Successfully" });

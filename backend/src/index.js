@@ -11,15 +11,33 @@ const postRoutes = require("./routes/post.routes");
 const socketioAuth = require("socketio-auth");
 const authenticate = require("./middlewares/authenticate");
 const postAuthenticate = require("./middlewares/postAuthenticate");
-const corsOptions = {
-  origin: process.env.NODE_ENV === "development" ? "https://localhost:3000" : "https://social-gram.onrender.com",
-  credentials: true,
-  optionSuccessStatus: 200,
-};
+
 const httpServer = createServer(app);
 app.use(express.urlencoded({ extended: false }));
+
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: ["https://social-gram.onrender.com", "http://localhost:3000"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
+
+// Session
+app.use(
+  session({
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 15,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
+  })
+);
+//
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1);
+}
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send({ status: true, message: "Instagram Api Home" });
