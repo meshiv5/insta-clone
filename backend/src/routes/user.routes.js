@@ -45,9 +45,14 @@ userRouter.post("/login", async (req, res) => {
           let token = await UserModel.getJWT(user);
           res.clearCookie("access_token");
           res
-            .cookie("access_token", token, {
-              maxAge: 84000 * 60 * 60 * 2,
-            })
+            .cookie(
+              "access_token",
+              token,
+              {
+                maxAge: 84000 * 60 * 60 * 2,
+              },
+              { domain: ".onrender.com", sameSite: "None", secure: true }
+            )
             .status(200)
             .send({ status: true, message: "Logged In Successfully" });
         } else {
