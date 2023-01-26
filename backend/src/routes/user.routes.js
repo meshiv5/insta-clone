@@ -140,10 +140,9 @@ userRouter.patch("/change/password", auth, async (req, res) => {
   }
 });
 
-userRouter.get("/logout", (req, res) => {
-  const token = req.cookies.access_token;
-  blacklist.push(token);
-  res.clearCookie("access_token").status(200).send("Logged Out Succesfully !");
+userRouter.get("/logout", auth, (req, res) => {
+  blacklist.push(req.token);
+  res.status(200).send("Logged Out Succesfully !");
 });
 
 userRouter.get("/", auth, async (req, res) => {
