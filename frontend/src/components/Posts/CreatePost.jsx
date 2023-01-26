@@ -32,7 +32,17 @@ export default function CreatePost({ showModal, setShowModal }) {
           image: newUrl,
           caption: captionText,
         };
-        await axios.post(process.env.REACT_APP_SERVER + "post/", newData, { withCredentials: true });
+        await axios.post(
+          process.env.REACT_APP_SERVER + "post/",
+          newData,
+
+          {
+            headers: {
+              access_token: JSON.parse(localStorage.getItem("token")),
+            },
+            withCredentials: true,
+          }
+        );
         setUpdateIt((old) => old + 2);
         toast({
           title: "Post Uploaded Successfully !",

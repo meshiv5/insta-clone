@@ -24,9 +24,19 @@ export default function ChangePassword({ profileData }) {
   function handleLogout(e) {
     e.preventDefault();
     axios
-      .get(process.env.REACT_APP_SERVER + "user/logout", { withCredentials: true })
+      .get(
+        process.env.REACT_APP_SERVER + "user/logout",
+
+        {
+          headers: {
+            access_token: JSON.parse(localStorage.getItem("token")),
+          },
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         dispatch(setAuth(false));
+        localStorage.removeItem("token");
         toast({
           title: "Logout Success !",
           description: "Redirecting to login !",
@@ -48,7 +58,17 @@ export default function ChangePassword({ profileData }) {
 
   async function handleDataChange(e) {
     try {
-      await axios.patch(process.env.REACT_APP_SERVER + "user/change/password", formData, { withCredentials: true });
+      await axios.patch(
+        process.env.REACT_APP_SERVER + "user/change/password",
+        formData,
+
+        {
+          headers: {
+            access_token: JSON.parse(localStorage.getItem("token")),
+          },
+          withCredentials: true,
+        }
+      );
       toast({
         title: "Details Changed Successfully !",
         description: "your profile details has been updated !",

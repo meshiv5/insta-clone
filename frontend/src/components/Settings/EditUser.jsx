@@ -14,7 +14,17 @@ export default function EditUser({ profileData }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
   async function handleDataChange() {
-    await axios.patch(process.env.REACT_APP_SERVER + "user/edit/details", formData, { withCredentials: true });
+    await axios.patch(
+      process.env.REACT_APP_SERVER + "user/edit/details",
+      formData,
+
+      {
+        headers: {
+          access_token: JSON.parse(localStorage.getItem("token")),
+        },
+        withCredentials: true,
+      }
+    );
     setUpdateIt((old) => old + 10);
     toast({
       title: "Details Changed Successfully !",

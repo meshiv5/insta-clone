@@ -24,6 +24,7 @@ export const login = (data) => async (dispatch) => {
       },
     });
     document.cookie = `access_token=${response.data.token};SameSite=None;Secure`;
+    localStorage.setItem("token", JSON.stringify(response.data.token));
     dispatch({ type: LOGIN_SUCCESS, payload: response.data.message });
   } catch (e) {
     console.log(e);

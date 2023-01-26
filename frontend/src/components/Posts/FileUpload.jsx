@@ -43,7 +43,12 @@ export default function FileUpload() {
         const newData = {
           profileImage: newUrl,
         };
-        await axios.patch(process.env.REACT_APP_SERVER + "user/edit/profileImage", newData, { withCredentials: true });
+        await axios.patch(process.env.REACT_APP_SERVER + "user/edit/profileImage", newData, {
+          headers: {
+            access_token: JSON.parse(localStorage.getItem("token")),
+          },
+          withCredentials: true,
+        });
         setUpdateIt((old) => old + 2);
         toast({
           title: "Profile Changed Successfully !",

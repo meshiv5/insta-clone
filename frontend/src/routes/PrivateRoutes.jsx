@@ -10,7 +10,16 @@ export default function PrivateRoutes({ children }) {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_SERVER + "user", { withCredentials: true })
+      .get(
+        process.env.REACT_APP_SERVER + "user",
+
+        {
+          headers: {
+            access_token: JSON.parse(localStorage.getItem("token")),
+          },
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         dispatch(setAuth(true));
       })

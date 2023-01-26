@@ -21,9 +21,15 @@ export default function Suggestions() {
   function handleLogout(e) {
     e.preventDefault();
     axios
-      .get(process.env.REACT_APP_SERVER + "user/logout", { withCredentials: true })
+      .get(process.env.REACT_APP_SERVER + "user/logout", {
+        headers: {
+          access_token: JSON.parse(localStorage.getItem("token")),
+        },
+        withCredentials: true,
+      })
       .then((res) => {
         dispatch(setAuth(false));
+        localStorage.removeItem("token");
         toast({
           title: "Logout Success !",
           description: "Redirecting to login !",
@@ -50,7 +56,9 @@ export default function Suggestions() {
           <p className="font-semibold text-sm cursor-pointer">{profileData.username}</p>
           <p className="text-[#8E8E8E] text-sm">{profileData.name}</p>
         </div>
-        <p onClick={handleLogout} className="text-[#0095F6] font-semibold text-xs absolute right-0 cursor-pointer">Logout</p>
+        <p onClick={handleLogout} className="text-[#0095F6] font-semibold text-xs absolute right-0 cursor-pointer">
+          Logout
+        </p>
       </div>
       <p className="text-[#8E8E8E] text-sm font-medium mt-[15px] mb-[20px]">Suggestions for you</p>
       {randomNewusers.map((user) => {

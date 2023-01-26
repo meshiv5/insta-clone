@@ -19,7 +19,16 @@ export default function ProfileMenu({ onClose, onOpen, isOpen }) {
   useEffect(() => {
     if (!isAuth) {
       axios
-        .get(process.env.REACT_APP_SERVER + "user", { withCredentials: true })
+        .get(
+          process.env.REACT_APP_SERVER + "user",
+
+          {
+            headers: {
+              access_token: JSON.parse(localStorage.getItem("token")),
+            },
+            withCredentials: true,
+          }
+        )
         .then((res) => {})
         .catch((e) => {
           navigate("/login");
@@ -29,9 +38,19 @@ export default function ProfileMenu({ onClose, onOpen, isOpen }) {
   function handleLogout(e) {
     e.preventDefault();
     axios
-      .get(process.env.REACT_APP_SERVER + "user/logout", { withCredentials: true })
+      .get(
+        process.env.REACT_APP_SERVER + "user/logout",
+
+        {
+          headers: {
+            access_token: JSON.parse(localStorage.getItem("token")),
+          },
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         dispatch(setAuth(false));
+        localStorage.removeItem("token");
         toast({
           title: "Logout Success !",
           description: "Redirecting to login !",
