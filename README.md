@@ -4,7 +4,10 @@
  Instagram Clone is Replica of one of the biggest social media platform Instagram , in my version of instagram you can do everything from signing up to talking to friends posting photos , following each other and many more such features all built solely by me .
 ## Video Showcase Of Project 
 [![](https://markdown-videos.deta.dev/youtube/PvIXahE1wyo)](https://youtu.be/PvIXahE1wyo)
+
+#### Currently This Project is Not Deployed Due To No Good Service For Deploying Backend But Will be deploying it in near future .
 ## Demo Account 
+
 - username :- aman
 - password :- abcd1234
 
